@@ -1,0 +1,13 @@
+.detail {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    padding: 50px;
+    background: black;
+    color: white;
+}
+
+.slide-product {
+    width: 700px;
+}
