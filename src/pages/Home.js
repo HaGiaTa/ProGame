@@ -44,21 +44,21 @@ const HomeApp = () => {
     };
     return (
         <div className='slide-img'>
-            <Carousel afterChange={onChange}>
+            <Carousel autoplay={true} afterChange={onChange}>
                 <div>
-                    <img src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/09/hinh-nen-game.jpg" width="1303px" height="630"></img>
+                    <img src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/09/hinh-nen-game.jpg" width="100%" height="850"></img>
                 </div>
                 <div>
-                    <img src="https://i.pinimg.com/736x/e3/d8/86/e3d8864c08a1cae52cf5a4b3264e3f76.jpg" width="1303px" height="630"></img>
+                    <img src="https://i.pinimg.com/736x/e3/d8/86/e3d8864c08a1cae52cf5a4b3264e3f76.jpg" width="100%" height="850"></img>
                 </div>
                 <div>
-                    <img src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/anh-lien-quan-54.jpg" width="1303px" height="630"></img>
+                    <img src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/anh-lien-quan-54.jpg" width="100%" height="850"></img>
                 </div>
                 <div>
-                    <img src="https://i.ytimg.com/vi_webp/ztNoBI0m_P0/maxresdefault.webp" width="1303px" height="630"></img>
+                    <img src="https://i.ytimg.com/vi_webp/ztNoBI0m_P0/maxresdefault.webp" width="100%" height="850"></img>
                 </div>
                 <div>
-                    <img src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/anh-ff-1.jpg" width="1303px" height="630"></img>
+                    <img src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/anh-ff-1.jpg" width="100%" height="850"></img>
                 </div>
             </Carousel>
             <div className='products-container'>

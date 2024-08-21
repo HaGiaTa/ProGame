@@ -8,6 +8,8 @@ const { Header, Content, Footer } = Layout;
 
 const HeaderApp = () => {
     const navigate = useNavigate();
+    const isLogin = localStorage.getItem('isLogin')
+    const avtUser = localStorage.getItem('avtUser')
 
 
 
@@ -19,19 +21,38 @@ const HeaderApp = () => {
             label: 'Home',
             icon: <HomeFilled />
         },
-
+        avtUser &&
         {
-            key: 'login',
-            label: 'Login',
-            icon: <LoginOutlined />
-        }
+            disabled: true,
+            icon: <img style={{ width: 32, height: 32 }} src={avtUser} />
+        },
+        !isLogin ?
+            {
+                key: 'login',
+                label: 'Login',
+                icon: <LoginOutlined />
+            } : {
+                key: 'logout',
+                label: 'Logout',
+                icon: <LoginOutlined style={{
+                    fontSize: '18px',
+                    fontWeight: '900',
+                }} />
+            }
+
 
     ]
 
     const onclick = (e) => {
-        navigate(`/${e.key}`)
+        if (e?.key === 'logout') {
+            localStorage.removeItem('isLogin')
+            localStorage.removeItem('avtUser')
+            return window.location.reload()
+        }
+        navigate(`/${e?.key}`)
 
     }
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();

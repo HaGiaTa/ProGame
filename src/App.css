@@ -51,3 +51,12 @@
 .slide-img {
   background: black;
 }
+.menu{
+  display: flex;
+  align-items: center !important;
+}
+.ant-menu-item{
+  display: flex !important;
+  justify-content:center !important;
+  align-items: center !important;
+}

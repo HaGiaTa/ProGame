@@ -9,10 +9,12 @@ import HeaderApp from './pages/Header';
 import HomeApp from './pages/Home';
 import Footer from './pages/Footer';
 import { ProductDetail } from './pages/ProductDetail';
+import { useEffect } from 'react';
 
 
 
 function App() {
+  const dataAcc = localStorage.getItem('account');
 
   const config = {
     apiKey: 'AIzaSyAJvq5ASEnEs1WEgc5bFmpt5lDxC1ePZ30',
@@ -20,6 +22,26 @@ function App() {
   }
 
   firebase.initializeApp(config);
+  useEffect(() => {
+    if (!dataAcc) {
+      let dataAccoount = [
+        {
+          id: 1,
+          username: 'admin',
+          email: 'admin@gmail.com',
+          password: '1',
+        },
+        {
+          id: 2,
+          username: 'admin2',
+          email: 'admin2@gmail.com',
+          password: '1',
+        }
+      ];
+
+      localStorage.setItem('account', JSON.stringify(dataAccoount));
+    }
+  }, [dataAcc])
 
   return (
     <BrowserRouter>

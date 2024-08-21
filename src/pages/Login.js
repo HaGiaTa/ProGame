@@ -1,21 +1,57 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, message } from 'antd';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import '../styles/login.css';
-function Login({ user }) {
+import { useNavigate } from 'react-router-dom';
+import { checkEmail } from './checkEmail';
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
+function Login({ user }) {
+    const [messageApi, contextHolder] = message.useMessage();
+    const navigate = useNavigate()
+    const [email, setEmail] = useState()
+    const [password, setPassword] = useState()
+
+    const handleLogin = () => {
+        if (email !== '' || password !== '') {
+            if (checkEmail(email, password, 'login')) {
+                messageApi.open({
+                    type: 'success',
+                    content: 'Login Success',
+                });
+                localStorage.setItem('isLogin', true)
+                setTimeout(() => {
+                    navigate('/')
+                }, 1000);
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: 'Login Failure',
+                });
+            }
+        } else {
+            messageApi.open({
+                type: 'warning',
+                content: 'Please enter a values!',
+            });
+        }
+    }
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
+
+
     const handleGoogleLogin = async () => {
         try {
             const provider = new firebase.auth.GoogleAuthProvider();
-            await firebase.auth().signInWithPopup(provider);
+            const result = await firebase.auth().signInWithPopup(provider);
+            const user = result.user;
+            if (user && user.multiFactor) {
+                localStorage.setItem('avtUser', user.multiFactor?.user?.photoURL ?? '')
+                localStorage.setItem('isLogin', true)
+            }
+            navigate('/')
         } catch (error) {
             console.log(error.message);
         }
@@ -33,9 +69,8 @@ function Login({ user }) {
 
 
     return (
-        <div className='form'>
-
-
+        <div style={{ height: '60vh', display: 'flex', justifyContent: 'center' }} className='form'>
+            {contextHolder}
             <Form
                 name="basic"
                 labelCol={{
@@ -45,12 +80,12 @@ function Login({ user }) {
                     span: 16,
                 }}
                 style={{
-                    maxWidth: 600,
+                    width: '50%',
                 }}
                 initialValues={{
                     remember: true,
                 }}
-                onFinish={handleEmailLogin}
+                // onFinish={handleEmailLogin}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
@@ -65,7 +100,7 @@ function Login({ user }) {
                         },
                     ]}
                 >
-                    <Input />
+                    <Input type='email' onChange={(e) => setEmail(e.target.value)} />
                 </Form.Item>
 
                 <Form.Item
@@ -78,7 +113,7 @@ function Login({ user }) {
                         },
                     ]}
                 >
-                    <Input.Password />
+                    <Input.Password onChange={(e) => setPassword(e.target.value)} />
                 </Form.Item>
 
                 <Form.Item
@@ -98,13 +133,17 @@ function Login({ user }) {
                         span: 16,
 
                     }}
-                ><Button type="primary" style={{ marginRight: 10 }} onClick={handleGoogleLogin}>
+                >
+                    <Button type="primary" style={{ marginRight: 10 }} onClick={() => handleLogin()}>
+                        Login
+                    </Button>
+                    <Button type="primary" style={{ marginRight: 10 }} onClick={handleGoogleLogin}>
                         Google
                     </Button>
 
 
-                    <Button type="primary" htmlType="submit"><a href='register'>Register</a>
 
+                    <Button type="link" htmlType="submit"><a href='register'>Register</a>
                     </Button>
                 </Form.Item>
 

@@ -1,33 +1,59 @@
-import React from 'react'
-import { Button, Checkbox, Form, Input } from 'antd';
-import firebase from 'firebase/compat/app';
+import { Button, Checkbox, Form, Input, message } from 'antd';
 import 'firebase/compat/auth';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/register.css';
+import { checkEmail } from './checkEmail';
 export const Register = () => {
+    const [messageApi, contextHolder] = message.useMessage();
+    const navigate = useNavigate()
 
-    const onFinish = async (value) => {
-        console.log("🚀 ~ onFinish ~ value:", value)
-        if (value?.password.length < 6) {
-            return alert('Password must be at least 6 characters')
-        }
-        else if (value?.confirmPassword !== value?.password) {
-            return alert('Pasword does not match')
-        }
-        else {
-            try {
-                const result = await firebase.auth().createUserWithEmailAndPassword(value?.email, value?.password);
-                await result.user.updateProfile({
-                    displayName: value?.username,
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPw, setConfirmPw] = useState()
+
+    const handleRegister = () => {
+        let dataAccoount = JSON.parse(localStorage.getItem('account'));
+
+        if (email !== '' || password !== '' || confirmPw !== '') {
+            if (checkEmail(email)) {
+                messageApi.open({
+                    type: 'warning',
+                    content: 'Email already exists !',
                 });
-
-            } catch (error) {
-                console.error('error', error.message)
-                // console.log(error.message);
+            } else {
+                if (password === confirmPw) {
+                    dataAccoount.push({
+                        id: dataAccoount.length + 1,
+                        email: email,
+                        password: password
+                    })
+                    localStorage.setItem('account', JSON.stringify(dataAccoount))
+                    messageApi.open({
+                        type: 'success',
+                        content: 'Register success',
+                    });
+                    setTimeout(() => {
+                        navigate('/login')
+                    }, 1000);
+                } else {
+                    messageApi.open({
+                        type: 'error',
+                        content: 'Confirm Password Failed',
+                    });
+                }
             }
+        } else {
+            messageApi.open({
+                type: 'error',
+                content: 'Please Enter Email and Password!',
+            });
         }
     }
+
     return (
-        <div className='content'>
+        <div style={{ height: '60vh', display: 'flex', justifyContent: 'center' }} className='form'>
+            {contextHolder}
             <Form
                 name="basic"
                 labelCol={{
@@ -37,12 +63,11 @@ export const Register = () => {
                     span: 16,
                 }}
                 style={{
-                    maxWidth: 600,
+                    width: '50%',
                 }}
                 initialValues={{
                     remember: true,
                 }}
-                onFinish={onFinish}
                 // onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
@@ -68,7 +93,7 @@ export const Register = () => {
                         },
                     ]}
                 >
-                    <Input />
+                    <Input onChange={(e) => setEmail(e.target.value)} />
                 </Form.Item>
 
                 <Form.Item
@@ -81,7 +106,7 @@ export const Register = () => {
                         },
                     ]}
                 >
-                    <Input.Password />
+                    <Input.Password onChange={(e) => setPassword(e.target.value)} />
                 </Form.Item>
 
                 <Form.Item
@@ -94,7 +119,7 @@ export const Register = () => {
                         },
                     ]}
                 >
-                    <Input.Password />
+                    <Input type='password' onChange={(e) => setConfirmPw(e.target.value)} />
                 </Form.Item>
 
                 <Form.Item
@@ -114,13 +139,12 @@ export const Register = () => {
                         span: 16,
 
                     }}
-                ><Button type="primary" style={{ marginRight: 10 }} >
-                        Google
+                >
+                    <Button type="primary" onClick={() => handleRegister()}>
+                        Register
                     </Button>
 
-
-                    <Button type="primary" htmlType="submit"><a href='login'>Login</a>
-
+                    <Button type="link"><a href='login'>Login</a>
                     </Button>
                 </Form.Item>
 
